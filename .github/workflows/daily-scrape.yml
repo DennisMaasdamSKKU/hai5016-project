@@ -1,0 +1,30 @@
+name: Daily Menu Scrape
+
+on:
+  schedule:
+    # Runs every day at 7:00 AM Korea time = 22:00 UTC previous day
+    - cron: "0 22 * * *"
+  workflow_dispatch:
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    environment: dev-prod
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run menu scraper
+        env:
+          SUPABASE_CONNECTION_STRING: ${{ secrets.SUPABASE_CONNECTION_STRING }}
+        run: uv run python scrape.py
