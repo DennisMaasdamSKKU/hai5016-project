@@ -1,9 +1,25 @@
 import os
 from datetime import date
+from pathlib import Path
+from loguru import logger
 
 import psycopg
 from psycopg.rows import dict_row
 from dotenv import load_dotenv
+
+PROJECT_ROOT = Path(__file__).resolve().parent
+LOG_DIR = PROJECT_ROOT / "logs"
+
+
+def setup_logging() -> None:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    logger.remove()
+    logger.add(LOG_DIR / "getmenus.log", rotation="1 MB", encoding="utf-8")
+    logger.add(lambda message: print(message, end=""))
+
+
+def get_today() -> str:
+    return date.today().isoformat()
 
 
 def get_connection_string() -> str:
@@ -25,7 +41,7 @@ def get_menu(menu_date: str | None = None, limit: int = 20) -> list[dict]:
     if menu_date is None:
         menu_date = date.today().isoformat()
 
-    sql = sql = """
+    sql = """
     select
         menu_date,
         university,
