@@ -28,3 +28,7 @@ jobs:
         env:
           SUPABASE_CONNECTION_STRING: ${{ secrets.SUPABASE_CONNECTION_STRING }}
         run: uv run python scrape.py
+      - name: Parse menu items
+        env:
+          SUPABASE_CONNECTION_STRING: ${{ secrets.SUPABASE_CONNECTION_STRING }}
+        run: uv run python parse_menu_items.py
