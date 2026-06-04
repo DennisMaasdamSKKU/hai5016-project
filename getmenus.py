@@ -25,20 +25,21 @@ def get_menu(menu_date: str | None = None, limit: int = 20) -> list[dict]:
     if menu_date is None:
         menu_date = date.today().isoformat()
 
-    sql = """
+    sql = sql = """
     select
         menu_date,
-        university_name,
+        university,
         campus,
         restaurant_name,
         meal_type,
-        item_name,
-        description,
-        price,
-        currency
+        meal_name,
+        price_krw,
+        serving_time,
+        raw_text
     from public.campus_menu_items
     where menu_date = %s
-    order by created_at desc
+      and is_valid_menu = true
+    order by university, restaurant_name, meal_type, meal_name
     limit %s
     """
 
